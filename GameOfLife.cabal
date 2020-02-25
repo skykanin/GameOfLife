@@ -9,7 +9,7 @@ version:             0.1.0.0
 -- description:
 -- bug-reports:
 license:             GPL-3.0-or-later
-license-file:        LICENSE
+license-file:        LICENSE.md
 author:              skykanin
 maintainer:          3789764+skykanin@users.noreply.github.com
 -- copyright:

@@ -1,28 +1,23 @@
-{ nixpkgs ? import <nixpkgs> {}, compiler ? "default", doBenchmark ? false }:
-
+{ pkgs ? import <nixpkgs> {} }:
+with pkgs;
 let
-
-  inherit (nixpkgs) pkgs;
-
-  f = { mkDerivation, base, gloss, stdenv }:
-      mkDerivation {
-        pname = "GameOfLife";
-        version = "0.1.0.0";
-        src = ./.;
-        isLibrary = false;
-        isExecutable = true;
-        executableHaskellDepends = [ base gloss ];
-        license = stdenv.lib.licenses.gpl3Plus;
-      };
-
-  haskellPackages = if compiler == "default"
-                       then pkgs.haskellPackages
-                       else pkgs.haskell.packages.${compiler};
-
-  variant = if doBenchmark then pkgs.haskell.lib.doBenchmark else pkgs.lib.id;
-
-  drv = variant (haskellPackages.callPackage f {});
-
+  inherit (lib) makeLibraryPath;
+  hs = haskell.packages.ghc865;
+  tools = [
+    (hs.ghcWithPackages (ps: [ps.GLUT ps.OpenGL ps.OpenGLRaw]))
+    hs.cabal-install
+    hs.ghcid
+    pkgs.binutils-unwrapped
+  ];
+  libraries = [
+    
+  ];
+  libraryPath = "${makeLibraryPath libraries}";
 in
-
-  if pkgs.lib.inNixShell then drv.env else drv
+  pkgs.runCommand "shell" {
+    buildInputs = tools ++ libraries;
+    shellHook = ''
+      export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${libraryPath}"
+      export LIBRARY_PATH="${libraryPath}"
+    '';
+  } ""

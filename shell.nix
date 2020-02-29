@@ -4,13 +4,15 @@ let
   inherit (lib) makeLibraryPath;
   hs = haskell.packages.ghc865;
   tools = [
-    (hs.ghcWithPackages (ps: [ps.GLUT ps.OpenGL ps.OpenGLRaw]))
+    hs.ghc
     hs.cabal-install
     hs.ghcid
     pkgs.binutils-unwrapped
   ];
   libraries = [
-    
+    libGL
+    libGLU
+    freeglut
   ];
   libraryPath = "${makeLibraryPath libraries}";
 in

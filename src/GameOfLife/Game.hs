@@ -1,9 +1,12 @@
 module Game where
 
-import Data.Vector (Vector, replicate)
-import Prelude hiding (replicate)
+import Control.Applicative (liftA2)
+import Data.Vector (Vector, iterateN)
 
-type Board = Vector (Vector Bool)
+type Board = Vector (Float, Float, Bool)
 
 initialGame :: Board
-initialGame = replicate 10 (replicate 10 False)
+initialGame = liftA2
+  (\x y -> (x, y, False))
+  (iterateN 10 (+1) 0)
+  (iterateN 10 (\x -> x - 1) 0)

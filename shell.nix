@@ -7,7 +7,8 @@ let
     hs.ghc
     hs.cabal-install
     hs.ghcid
-    pkgs.binutils-unwrapped
+    binutils-unwrapped
+    hlint
   ];
   libraries = [
     libGL

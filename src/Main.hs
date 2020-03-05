@@ -1,6 +1,6 @@
 module Main where
 
-import Game (initialGame)
+import Game (initialGame, step)
 import Graphics.Gloss
 import Graphics.Gloss.Data.Color
 import Rendering (gameAsPicture)
@@ -11,4 +11,4 @@ backgroundColour = makeColor 255 255 255 255
 window = InWindow "GameOfLife" (640,500) (100,100)
 
 main :: IO ()
-main = play window backgroundColour 30 initialGame gameAsPicture (const id) (const id)
+main = simulate window backgroundColour 30 initialGame gameAsPicture (\_ _ -> step)

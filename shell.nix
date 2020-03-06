@@ -7,6 +7,7 @@ let
     hs.ghc
     hs.cabal-install
     hs.ghcid
+    hs.hindent
     binutils-unwrapped
     hlint
   ];

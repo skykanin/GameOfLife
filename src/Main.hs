@@ -8,7 +8,8 @@ import Rendering (gameAsPicture)
 backgroundColour :: Color
 backgroundColour = makeColor 255 255 255 255
 
-window = InWindow "GameOfLife" (640,500) (100,100)
+window = InWindow "GameOfLife" (640, 500) (100, 100)
 
 main :: IO ()
-main = simulate window backgroundColour 30 initialGame gameAsPicture (\_ _ -> step)
+main =
+  simulate window backgroundColour 30 initialGame gameAsPicture (\_ _ -> step)

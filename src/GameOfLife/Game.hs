@@ -47,4 +47,4 @@ findNeighbours (Board board w) (x, y) = do
   Nothing
 
 step :: Board -> Board
-step = undefined
+step b = b

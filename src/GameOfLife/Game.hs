@@ -1,7 +1,7 @@
 module Game where
 
 import Control.Applicative (liftA2)
-import Data.Vector (Vector, (!?), iterateN)
+import Data.Vector (Vector, (!?), fromList, iterateN, mapMaybe)
 
 data Board =
   Board
@@ -27,24 +27,27 @@ initialGame =
 findIndex :: Num a => a -> a -> a -> a
 findIndex width x y = x + width * y
 
-neighbours :: [(Float -> Float, Float -> Float)]
+neighbours :: Vector (Float -> Float, Float -> Float)
 neighbours =
-  [ (succ, id)
-  , (succ, succ)
-  , (succ, pred)
-  , (id, succ)
-  , (id, pred)
-  , (pred, id)
-  , (pred, succ)
-  , (pred, pred)
-  ]
+  fromList
+    [ (succ, id)
+    , (succ, succ)
+    , (succ, pred)
+    , (id, succ)
+    , (id, pred)
+    , (pred, id)
+    , (pred, succ)
+    , (pred, pred)
+    ]
 
 findNeighbours :: Board -> (Float, Float) -> Maybe (Vector Cell)
-findNeighbours (Board board w) (x, y) = do
-  let index = findIndex w x y
-  (cx, cy, _) <- board !? floor index
-  let indecies = map (\(f, g) -> findIndex (f cx) (g cy)) neighbours
-  Nothing
+findNeighbours (Board board w) (x, y) =
+  mapMaybe findCell . neighboursToIndices <$> findCell index
+  where
+    index = findIndex w x y
+    findCell = (board !?) . floor
+    neighboursToIndices (cx, cy, _) =
+      (\(f, g) -> findIndex w (f cx) (g cy)) <$> neighbours
 
 step :: Board -> Board
 step b = b

@@ -28,5 +28,13 @@ executable GameOfLife
   hs-source-dirs:      src, src/GameOfLife
   default-language:    Haskell2010
   -- default-extensions:  
+
+
+test-suite properties
+    type:       exitcode-stdio-1.0
+    main-is:    test/Properties.hs
+    build-depends: , base >= 4.8 && < 5
+                   , hspec
+    default-language:    Haskell2010
                      
                        

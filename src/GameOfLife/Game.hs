@@ -26,6 +26,12 @@ initialGame =
        (iterateN boardSize (\n -> n - 1) 0))
     boardSize
 
+createBoard :: Float -> Board
+createBoard size = Board {_board = fromList board, size = size}
+  where
+    board = [(y, x, False) | x <- iterator, y <- iterator]
+    iterator = [0 .. pred size]
+    
 testBoard :: Board
 testBoard = Board {_board = fromList board, size = len}
   where
@@ -41,8 +47,10 @@ shapeMapper (3, 4, False) = (3, 4, True)
 shapeMapper c = c
 
 -- find index for zero indexed board
-findIndex :: Num a => a -> a -> a -> a
-findIndex width x y = x + width * y
+findIndex :: (Num a, Ord a) => a -> a -> a -> Maybe a
+findIndex s x y
+  | x >= 0 && y >= 0 && s > x && s > y = Just $ x + s * y
+  | otherwise = Nothing
 
 neighbours :: Vector (Float -> Float, Float -> Float)
 neighbours =
@@ -57,18 +65,13 @@ neighbours =
     , (pred, pred)
     ]
 
-helper ::
-     Float -> Float -> Float -> (Float -> Float, Float -> Float) -> Maybe Float
-helper w cx cy (f, g)
-  | f cx >= 0 && g cy >= 0 = Just $ findIndex w (f cx) (g cy)
-  | otherwise = Nothing
-
 neighboursToIndices :: Cell -> Float -> Vector Float
-neighboursToIndices (cx, cy, _) w = mapMaybe (helper w cx cy) neighbours
+neighboursToIndices (cx, cy, _) w =
+  mapMaybe (\(f, g) -> findIndex w (f cx) (g cy)) neighbours
 
 findNeighbours :: Board -> (Float, Float) -> Maybe (Vector Cell)
 findNeighbours (Board board w) (x, y) =
-  mapMaybe findCell . nti <$> findCell index
+  mapMaybe findCell . nti <$> (findCell =<< index)
   where
     index = findIndex w x y
     findCell = (board !?) . floor

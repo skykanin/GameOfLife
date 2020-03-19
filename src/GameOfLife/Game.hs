@@ -1,50 +1,50 @@
 module Game where
 
 import Control.Applicative (liftA2)
-import Data.Vector (Vector, (!?), fromList, iterateN, length, mapMaybe)
-import Prelude hiding (length)
+import Data.Vector (Vector, (!?), filter, fromList, iterateN, length, mapMaybe)
+import Prelude hiding (filter, length)
 
 data Board =
   Board
     { _board :: Vector Cell
-    , size :: Float
+    , _size :: Float
     }
-  deriving (Show)
+  deriving (Eq, Show)
 
 type Cell = (Float, Float, Bool)
 
 boardSize :: Num a => a
 boardSize = 20
 
--- boards must be 0 indexed!!!
+-- game board is zero indexed
 initialGame :: Board
-initialGame =
-  Board
-    (liftA2
-       (\x y -> (x, y, False))
-       (iterateN boardSize (+ 1) 0)
-       (iterateN boardSize (\n -> n - 1) 0))
-    boardSize
+initialGame = shipBoard
 
 createBoard :: Float -> Board
-createBoard size = Board {_board = fromList board, size = size}
+createBoard size = Board {_board = fromList board, _size = size}
   where
     board = [(y, x, False) | x <- iterator, y <- iterator]
     iterator = [0 .. pred size]
-    
-testBoard :: Board
-testBoard = Board {_board = fromList board, size = len}
-  where
-    board = [shapeMapper (y, x, False) | x <- iterator, y <- iterator]
-    len = foldr (const (+ 1)) 0 iterator
-    iterator = [0 .. 19]
 
-shapeMapper :: Cell -> Cell
-shapeMapper (2, 3, False) = (2, 3, True)
-shapeMapper (3, 3, False) = (3, 3, True)
-shapeMapper (2, 4, False) = (2, 4, True)
-shapeMapper (3, 4, False) = (3, 4, True)
-shapeMapper c = c
+lineBoard :: Board
+lineBoard = b {_board = line <$> _board b}
+  where
+    b = createBoard 5
+    line (1, 2, False) = (1, 2, True)
+    line (2, 2, False) = (2, 2, True)
+    line (3, 2, False) = (3, 2, True)
+    line c = c
+
+shipBoard :: Board
+shipBoard = b {_board = ship <$> _board b}
+  where
+    b = createBoard boardSize
+    ship (1, 19, False) = (1, 19, True)
+    ship (2, 18, False) = (2, 18, True)
+    ship (0, 17, False) = (0, 17, True)
+    ship (1, 17, False) = (1, 17, True)
+    ship (2, 17, False) = (2, 17, True)
+    ship c = c
 
 -- find index for zero indexed board
 findIndex :: (Num a, Ord a) => a -> a -> a -> Maybe a
@@ -78,21 +78,26 @@ findNeighbours (Board board w) (x, y) =
     nti = (`neighboursToIndices` w)
 
 -- Game rules
--- Any live cell with two or three neighbors survives
+-- Any live cell with two or three live neighbours survives
 -- Any dead cell with three live neighbors becomes a live cell.
 -- All other live cells die in the next generation. Similarly, all other dead cells stay dead.
+alive :: Vector Cell -> Vector Cell
+alive = filter (\(_, _, cellState) -> cellState)
+
 applyRules :: Board -> Cell -> Maybe Cell
 applyRules board c@(x, y, True) =
   (\v ->
      if length v == 2 || length v == 3
        then c
-       else (x, y, False)) <$>
+       else (x, y, False)) .
+  alive <$>
   findNeighbours board (x, y)
 applyRules board c@(x, y, False) =
   (\v ->
      if length v == 3
        then (x, y, True)
-       else c) <$>
+       else c) .
+  alive <$>
   findNeighbours board (x, y)
 
 -- If indexing of cells out of bounds return initial game board

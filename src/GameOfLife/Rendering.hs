@@ -7,11 +7,13 @@ import Graphics.Gloss
 squareSize :: Num a => a
 squareSize = 25
 
-start :: (Float, Float)
-start = (-640 / 2, 500 / 2 - squareSize)
+startF :: Float -> (Float, Float)
+startF n = (-s, -s)
+  where
+    s = 30 * (n / 2)
 
 gameAsPicture :: Board -> Picture
-gameAsPicture (Board vec _) =
+gameAsPicture (Board vec size) =
   Pictures
     [ if b
       then Color black sq
@@ -21,6 +23,8 @@ gameAsPicture (Board vec _) =
           yv = snd start + (y * 30)
           sq = square xv yv
     ]
+  where
+    start = startF size
 
 square :: Float -> Float -> Picture
 square x y = Polygon [(x, y), (x + s, y), (x + s, y + s), (x, y + s)]

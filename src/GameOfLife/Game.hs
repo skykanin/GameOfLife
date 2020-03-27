@@ -1,7 +1,6 @@
 module Game where
 
-import Control.Applicative (liftA2)
-import Data.Vector (Vector, (!?), filter, fromList, iterateN, length, mapMaybe)
+import Data.Vector (Vector, (!?), filter, fromList, length, mapMaybe)
 import Prelude hiding (filter, length)
 
 data Board =

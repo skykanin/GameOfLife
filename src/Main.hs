@@ -12,4 +12,4 @@ window = InWindow "GameOfLife" (640, 500) (10, 10)
 
 main :: IO ()
 main =
-  simulate window backgroundColour 2 initialGame gameAsPicture (\_ _ -> step)
+  simulate window backgroundColour 3 initialGame gameAsPicture (\_ _ -> step)

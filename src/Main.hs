@@ -1,5 +1,6 @@
 module Main where
 
+import Board (Board)
 import Game (initialGame, step)
 import Graphics.Gloss
 import Graphics.Gloss.Data.Color

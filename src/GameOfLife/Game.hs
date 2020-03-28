@@ -1,16 +1,8 @@
 module Game where
 
+import Board (Board(..), Cell, createBoard)
 import Data.Vector (Vector, (!?), filter, fromList, length, mapMaybe)
 import Prelude hiding (filter, length)
-
-data Board =
-  Board
-    { _board :: Vector Cell
-    , _size :: Float
-    }
-  deriving (Eq, Show)
-
-type Cell = (Float, Float, Bool)
 
 boardSize :: Num a => a
 boardSize = 20
@@ -18,12 +10,6 @@ boardSize = 20
 -- game board is zero indexed
 initialGame :: Board
 initialGame = shipBoard
-
-createBoard :: Float -> Board
-createBoard size = Board {_board = fromList board, _size = size}
-  where
-    board = [(y, x, False) | x <- iterator, y <- iterator]
-    iterator = [0 .. pred size]
 
 lineBoard :: Board
 lineBoard = b {_board = line <$> _board b}

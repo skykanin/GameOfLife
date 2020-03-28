@@ -1,7 +1,7 @@
 module Rendering where
 
+import Board (Board(..))
 import Data.Vector (toList)
-import Game (Board(..))
 import Graphics.Gloss
 
 squareSize :: Num a => a

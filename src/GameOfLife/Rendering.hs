@@ -8,7 +8,7 @@ squareSize :: Num a => a
 squareSize = 25
 
 startF :: Float -> (Float, Float)
-startF n = (-s, -s)
+startF n = (-s, s)
   where
     s = 30 * (n / 2)
 
@@ -20,7 +20,7 @@ gameAsPicture (Board vec size) =
       else Color red sq
     | (x, y, b) <- toList vec
     , let xv = fst start + (x * 30)
-          yv = snd start + (y * 30)
+          yv = snd start - (y * 30)
           sq = square xv yv
     ]
   where

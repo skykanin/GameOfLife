@@ -5,7 +5,7 @@ module Interact where
 
 import Board (Board(..))
 import Data.Aeson (FromJSON, decode)
-import Data.ByteString.Lazy (readFile)
+import Data.ByteString.Lazy (ByteString, readFile)
 import Data.Either (isLeft)
 import Data.Vector (Vector, (!?), iterateN, length, zipWith)
 import GHC.Generics
@@ -51,10 +51,13 @@ fromPlain (PlainBoard pb ps) = Board {_board = board, _size = ps}
       pure (y, x)
     board = zipWith (\(y, x) i -> (y, x, intToBool i)) coords pb
 
+decodeBoard :: ByteString -> Maybe (Vector PlainBoard)
+decodeBoard file = _getBoards <$> decode file
+
 getBoards :: IO (Either String Boards)
 getBoards = do
   file <- readFile $ "resources/" <> filename
-  let res = fmap fromPlain . _getBoards <$> (decode file :: Maybe PlainBoards)
+  let res = (fromPlain <$>) <$> decodeBoard file
   pure $ maybeToRight "Couldn't decode json file" res
 
 getBoard :: Either String Boards -> Int -> Either String Board

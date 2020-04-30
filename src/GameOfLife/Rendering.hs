@@ -15,16 +15,15 @@ startF n = (-s, s)
 gameAsPicture :: Board -> Picture
 gameAsPicture (Board vec size) =
   Pictures
-    [ if b
-      then Color black sq
-      else Color red sq
+    [ Color color sq
     | (x, y, b) <- toList vec
-    , let xv = fst start + (x * 30)
-          yv = snd start - (y * 30)
+    , let xv = f + (x * 30)
+          yv = s - (y * 30)
           sq = square xv yv
+          color = if b then black else red
     ]
   where
-    start = startF size
+    (f, s) = startF size
 
 square :: Float -> Float -> Picture
 square x y = Polygon [(x, y), (x + s, y), (x + s, y + s), (x, y + s)]

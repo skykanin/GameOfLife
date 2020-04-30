@@ -1,7 +1,8 @@
 module Main where
 
+import Board (Board(..), Cell)
 import Data.Vector (fromList)
-import Game (Board(..), Cell, applyRules, findIndex, findNeighbours, step)
+import Game (applyRules, findIndex, findNeighbours, step)
 import Test.Hspec
 
 createBoard :: Float -> Board
@@ -61,7 +62,6 @@ resLineBoard5 = b5 {_board = ln <$> _board b5}
     ln (2, 2, False) = ln (2, 2, True)
     ln (2, 3, False) = ln (2, 3, True)
     ln c = c
-
 
 lineBoard20 :: Board
 lineBoard20 = testBoard20 {_board = fmap toLine (_board testBoard20)}

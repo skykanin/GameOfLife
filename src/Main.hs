@@ -3,13 +3,14 @@ module Main where
 import Board (Board)
 import Game (step)
 import Graphics.Gloss
-import Graphics.Gloss.Data.Color
+import Graphics.Gloss.Data.Color()
 import Interact (readIdxToBoard)
 import Rendering (gameAsPicture)
 
 backgroundColour :: Color
 backgroundColour = makeColor 255 255 255 255
 
+window :: Display
 window = InWindow "GameOfLife" (640, 500) (10, 10)
 
 run :: Board -> IO ()
